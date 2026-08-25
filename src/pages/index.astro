@@ -1,28 +1,20 @@
 ---
 import { getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import IconRss from "@/assets/icons/IconRss.svg";
-import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
-import LinkButton from "@/components/LinkButton.astro";
+import Socials from "@/components/Socials.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { useTranslations } from "@/i18n";
 import config from "@/config";
 
-const { socials, posts: postsConfig } = config;
-
 const locale = Astro.currentLocale ?? config.site.lang;
-const t = useTranslations(locale);
 
 const posts = await getCollection("posts");
-const sortedPosts = getSortedPosts(posts);
-const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+const recentPosts = getSortedPosts(posts).slice(0, 4);
 const homePath = getRelativeLocaleUrl(locale, "");
+const postsPath = getRelativeLocaleUrl(locale, "posts");
 ---
 
 <Layout>
@@ -31,97 +23,51 @@ const homePath = getRelativeLocaleUrl(locale, "");
     id="main-content"
     data-layout="index"
     data-home-path={homePath}
-    class="app-layout my-1"
+    class="app-layout"
   >
-    <section id="hero" class="border-border border-b pt-8 pb-6">
-      <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        Mingalaba
-      </h1>
-      <a
-        target="_blank"
-        href={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rss.xml`}
-        class="inline-block"
-        aria-label="RSS Feed"
-        title="RSS Feed"
-      >
-        <IconRss
-          width={20}
-          height={20}
-          class="stroke-accent scale-125 stroke-3 rtl:-rotate-90"
-        />
-        <span class="sr-only">RSS Feed</span>
-      </a>
-
-      <p>
-        AstroPaper is a minimal, responsive, accessible and SEO-friendly Astro
-        blog theme. This theme follows best practices and provides accessibility
-        out of the box. Light and dark mode are supported by default. Moreover,
-        additional color schemes can also be configured.
-      </p>
-      <p class="mt-2">
-        Read the blog posts or check{" "}
-        <LinkButton
-          class="hover:text-accent underline decoration-dashed underline-offset-4"
-          href="https://github.com/satnaing/astro-paper#readme"
+    <section class="border-border border-b py-10 sm:py-12">
+      <div>
+        <h1
+          aria-label="Zymir"
+          class="text-4xl font-bold tracking-tight sm:text-5xl"
         >
-          README
-        </LinkButton>{" "}
-        for more info.
-      </p>
-      {
-        socials.length > 0 && (
-          <div class="mt-4 flex max-sm:flex-col sm:items-center">
-            <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
-              {t.home.socialLinks}:
-            </div>
-            <Socials />
-          </div>
-        )
-      }
+          <span aria-hidden="true">
+            <span class="text-accent">&gt;</span>Zymir<span
+              class="terminal-cursor text-accent">_</span
+            >
+          </span>
+        </h1>
+        <p class="mt-4 max-w-3xl leading-7">
+          Building software, learning broadly, and following interesting
+          problems.
+        </p>
+        <p class="text-muted-foreground mt-2 text-sm">
+          All posts are written without AI-generated content.
+        </p>
+        <div class="mt-4">
+          <Socials />
+        </div>
+      </div>
     </section>
 
     {
-      featuredPosts.length > 0 && (
-        <section
-          id="featured"
-          class:list={[
-            "pt-12 pb-6",
-            { "border-border border-b": recentPosts.length > 0 },
-          ]}
-        >
-          <h2 class="text-2xl font-semibold tracking-wide">
-            {t.home.featured}
-          </h2>
-          <ul>
-            {featuredPosts.map(data => (
-              <Card variant="h3" {...data} />
-            ))}
-          </ul>
-        </section>
-      )
-    }
-
-    {
       recentPosts.length > 0 && (
-        <section id="recent-posts" class="pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">
-            {t.home.recentPosts}
-          </h2>
-          <ul>
-            {recentPosts.slice(0, postsConfig.perIndex).map(data => (
-              <Card variant="h3" {...data} />
+        <section class="py-8">
+          <h2 class="text-2xl font-semibold">Recent posts</h2>
+          <ul class="mt-4">
+            {recentPosts.map(post => (
+              <Card variant="h3" {...post} />
             ))}
           </ul>
+          <a
+            href={postsPath}
+            class="text-accent mt-6 inline-block font-medium decoration-dashed underline-offset-4 hover:underline"
+          >
+            View all →
+          </a>
         </section>
       )
     }
-
-    <div class="my-8 text-center">
-      <LinkButton href={getRelativeLocaleUrl(locale, "posts")}>
-        {t.home.allPosts}
-        <IconArrowRight class="inline-block rtl:-rotate-180" />
-      </LinkButton>
-    </div>
   </main>
   <Footer />
 </Layout>
@@ -136,3 +82,26 @@ const homePath = getRelativeLocaleUrl(locale, "");
     }
   });
 </script>
+
+<style>
+  .terminal-cursor {
+    animation: terminal-blink 1.15s steps(1, end) infinite;
+  }
+
+  @keyframes terminal-blink {
+    0%,
+    48% {
+      opacity: 1;
+    }
+    49%,
+    100% {
+      opacity: 0.25;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .terminal-cursor {
+      animation: none;
+    }
+  }
+</style>

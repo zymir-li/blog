@@ -64,6 +64,7 @@ const locale = Astro.currentLocale ?? config.site.lang;
 const {
   title,
   description,
+  lang,
   ogImage: initOgImage,
   canonicalURL,
   pubDatetime,
@@ -110,6 +111,7 @@ const ogImage = ogImageUrl
 
   <main
     id="main-content"
+    lang={lang}
     class:list={["app-layout", { "mt-8": !config.features.showBackButton }]}
     data-pagefind-body
   >

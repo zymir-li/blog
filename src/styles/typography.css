@@ -110,6 +110,24 @@
     }
   }
 
+  .app-prose:lang(zh-CN) {
+    font-size: 1.05rem;
+    line-height: 1.95;
+    letter-spacing: 0.018em;
+
+    h2,
+    h3,
+    h4 {
+      letter-spacing: 0.025em;
+      line-height: 1.55;
+    }
+
+    p,
+    li {
+      text-wrap: pretty;
+    }
+  }
+
   /* ===== Code Blocks & Syntax Highlighting ===== */
   .astro-code {
     @apply outline-border flex border bg-(--shiki-light-bg) text-(--shiki-light) [&_span]:text-(--shiki-light);

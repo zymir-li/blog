@@ -1,10 +1,11 @@
 ---
-import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
 import { getAssetPath } from "@/utils/withBase";
 import config from "@/config";
+import "@fontsource-variable/source-code-pro/wght.css";
+import "@fontsource-variable/noto-sans-sc/wght.css";
 import "@/styles/global.css";
 
 type Props = {
@@ -33,22 +34,25 @@ const rssHref = getRelativeLocaleUrl(
 <!doctype html>
 <html
   dir={site.dir ?? "ltr"}
-  lang={Astro.currentLocale ?? site.lang}
+  lang={site.lang}
   class="overflow-y-scroll scroll-smooth"
 >
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href={getAssetPath("favicon.svg")} />
-    <link rel="icon" href={getAssetPath("favicon.ico")} />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      sizes="any"
+      href={`${getAssetPath("favicon.ico")}?v=avatar-2`}
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href={getAssetPath("avatar-apple-touch-icon.png")}
+    />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
-
-    <!-- Font -->
-    <Font
-      cssVariable="--font-google-sans-code"
-      preload={[{ subset: "latin", weight: 400, style: "normal" }]}
-    />
 
     <!-- Primary meta -->
     <title>{title}</title>

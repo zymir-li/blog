@@ -1,0 +1,146 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import config from "@/config";
+
+const statusOrder = { "to-read": 0, "want-to-read": 1, completed: 2 } as const;
+const items = (await getCollection("library")).sort(
+  (a, b) =>
+    a.data.type.localeCompare(b.data.type) ||
+    statusOrder[a.data.status] - statusOrder[b.data.status] ||
+    a.data.title.localeCompare(b.data.title)
+);
+
+const typeLabel = { book: "Book", course: "Course" } as const;
+const statusLabel = {
+  "want-to-read": "Want to read",
+  "to-read": "Up next",
+  completed: "Finished",
+} as const;
+---
+
+<Layout
+  title={`Library | ${config.site.title}`}
+  description="Books, courses, and the ideas they left behind."
+>
+  <Header />
+  <main id="main-content" class="app-layout pb-12">
+    {
+      items.length > 0 && (
+        <div class="mt-8 flex flex-wrap gap-5" aria-label="Filter the library">
+          <button class="library-filter is-active" data-filter="all">
+            All
+          </button>
+          <button class="library-filter" data-filter="book">
+            Books
+          </button>
+          <button class="library-filter" data-filter="course">
+            Courses
+          </button>
+        </div>
+      )
+    }
+
+    <section class="mt-7 grid gap-4 sm:grid-cols-2" id="library-grid">
+      {
+        items.map(item => (
+          <article
+            class="library-card border-border bg-background grid grid-cols-[6rem_1fr] gap-4 border p-4"
+            data-type={item.data.type}
+            data-status={item.data.status}
+          >
+            {item.data.cover ? (
+              <div class="cover-frame bg-muted h-[8.5rem] w-24 overflow-hidden">
+                <Image
+                  src={item.data.cover}
+                  alt={`Cover of ${item.data.title}`}
+                  width={192}
+                  class="size-full object-contain"
+                />
+              </div>
+            ) : (
+              <div
+                class="media-mark bg-muted text-muted-foreground"
+                aria-hidden="true"
+              >
+                <span>{item.data.type === "book" ? "BOOK" : "COURSE"}</span>
+              </div>
+            )}
+            <div class="min-w-0 py-1">
+              <div class="flex items-center justify-between gap-2 text-[0.68rem] tracking-wider uppercase">
+                <span class="text-accent">{typeLabel[item.data.type]}</span>
+                <span class="text-muted-foreground text-right">
+                  {statusLabel[item.data.status]}
+                </span>
+              </div>
+              <h2 class="mt-3 text-lg leading-snug font-semibold">
+                {item.data.title}
+              </h2>
+              <p class="text-muted-foreground mt-1 text-sm leading-snug">
+                {item.data.creator}
+              </p>
+            </div>
+          </article>
+        ))
+      }
+    </section>
+    {
+      items.length === 0 && (
+        <p class="text-muted-foreground mt-10">Nothing here yet.</p>
+      )
+    }
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .library-filter {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid transparent;
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+  }
+  .library-filter:hover,
+  .library-filter.is-active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .library-card[hidden] {
+    display: none;
+  }
+  .cover-frame img {
+    filter: saturate(0.94);
+  }
+  .media-mark {
+    width: 6rem;
+    height: 8.5rem;
+    display: flex;
+    align-items: flex-end;
+    padding: 0.75rem;
+    letter-spacing: 0.14em;
+    font-size: 0.6rem;
+  }
+</style>
+
+<script>
+  function setupLibraryFilters() {
+    const buttons =
+      document.querySelectorAll<HTMLButtonElement>(".library-filter");
+    const cards = document.querySelectorAll<HTMLElement>(".library-card");
+    buttons.forEach(button =>
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter ?? "all";
+        buttons.forEach(item => item.classList.remove("is-active"));
+        button.classList.add("is-active");
+        cards.forEach(card => {
+          card.hidden = filter !== "all" && card.dataset.type !== filter;
+        });
+      })
+    );
+  }
+  setupLibraryFilters();
+  document.addEventListener("astro:after-swap", setupLibraryFilters);
+</script>
