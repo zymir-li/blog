@@ -35,7 +35,7 @@ const library = defineCollection({
       title: z.string(),
       creator: z.string(),
       type: z.enum(["book", "course"]),
-      status: z.enum(["want-to-read", "to-read", "completed"]),
+      status: z.enum(["want-to-read", "to-read", "reading", "completed"]),
       cover: image().optional(),
     }),
 });
