@@ -7,19 +7,19 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  --font-app: "Source Code Pro Variable", "Noto Sans SC Variable", monospace;
+  --font-app: "Source Code Pro Variable", "Noto Serif SC Variable", monospace;
 }
 
 /* Light theme values */
 :root,
 [data-theme="light"] {
-  --background: #faf8f3;
-  --foreground: #292724;
+  --background: #f6f3ec;
+  --foreground: #34312d;
   --accent: #096b9f;
   --accent-foreground: #ffffff;
-  --muted: #ece8df;
-  --muted-foreground: #706b63;
-  --border: #e6e0d6;
+  --muted: #efebe2;
+  --muted-foreground: #706b64;
+  --border: #d6d0c4;
 }
 
 /* Dark theme values */
