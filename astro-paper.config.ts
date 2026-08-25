@@ -7,7 +7,7 @@ export default defineAstroPaperConfig({
     url: siteUrl,
     title: "Zymir's Blog",
     description:
-      "Building software, learning broadly, and following interesting problems.",
+      "Still learning how to build software — mostly backend, with some full-stack, applied AI, and product along the way.",
     author: "Zymir",
     ogImage: "default-og.png",
     lang: "en",
